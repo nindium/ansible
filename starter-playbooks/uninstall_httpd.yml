@@ -1,0 +1,33 @@
+---
+- name: Uninstall HTTPD/Apache2 
+  hosts: all
+  become: true
+  gather_facts: yes
+  
+  tasks:
+  - name: Check HTTP service status
+    service:
+      name: "{{ (ansible_os_family == 'Debian') | ternary ('apache2', 'httpd') }}"
+    register: pack_status
+
+  - name: Stop httpd service
+    systemd:
+      name: "{{ (ansible_os_family == 'Debian') | ternary ('apache2', 'httpd') }}"
+      state: stopped
+    when: pack_status.status.SubState == "running"
+
+  - name: Remove httpd
+    yum:
+      name: httpd
+      state: absent
+    when: ("'dead' not in pack_status.status.SubState") and ansible_os_family == "RedHat"
+
+  - name: Remove Apache2
+    apt:
+      name: apache2
+      state: absent
+    when: pack_status.status.SubState != "dead" and ansible_os_family == "Debian"
+
+
+
+

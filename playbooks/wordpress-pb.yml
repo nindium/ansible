@@ -1,0 +1,19 @@
+---
+- name: WP project
+  hosts: dbservers
+  gather_facts: False
+  
+  tasks:
+  - name: Installing python
+    raw: test -e /usr/bin/python333 || (apt -y update && apt -y install python3-minimal)
+  become: true
+
+  roles:
+  - server
+  - php
+  - mysql
+  - wordpress
+
+
+  
+

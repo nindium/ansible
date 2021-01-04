@@ -1,0 +1,11 @@
+---
+- name: Installs Git on a Ubuntu server
+  hosts: dbservers
+  become: true
+  
+  tasks:
+  - name: Installing git
+    apt:
+      name: git
+      state: latest
+

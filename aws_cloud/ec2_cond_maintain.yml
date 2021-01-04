@@ -1,0 +1,52 @@
+---
+- name: Maintain (start, stop, terminate) EC2 instance by a condition
+  gather_facts: no
+  hosts: localhost
+  connection: local
+  vars_files:
+    aws_cred.yml
+ 
+  tasks:
+  - name: Define START action
+    set_fact:
+      state: running
+    when: act == "start"
+
+  - name: Define STOP action
+    set_fact:
+      state: stopped
+    when: act == "stop"
+
+  - name: Define DELETE action
+    set_fact:
+      state: absent
+    when: act == "terminate"
+
+  - name: Getting EC2 info
+    ec2_instance_info:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      region: us-east-1
+      filters:
+        "tag:Env": Dev
+    register:
+      ec2_info
+    tags:
+    - always
+
+  - name: Change EC2 instance state
+    ec2:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      region: us-east-1
+      instance_ids: "{{ item.instance_id }}"
+      state: "{{ state }}"
+      wait: yes
+    with_items: "{{ ec2_info.instances }}"
+  
+
+  
+     
+  
+
+

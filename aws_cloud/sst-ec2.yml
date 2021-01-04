@@ -1,0 +1,65 @@
+---
+- name: Start, Stop, Terminate EC2 instances
+  gather_facts: false
+  hosts: localhost
+  connection: local
+  vars_files:
+    aws_cred.yml
+  vars:
+    aws_region: us-east-1
+ 
+
+  tasks:
+  - name: Gather instances info
+    ec2_instance_info:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      region: "{{ aws_region }}"
+      filters:
+        "tag:Name": "{{instname| default('Ubuntu')}}"
+    register:
+      ec2_info
+    tags:
+    - always
+
+  - name: Starting EC2 instance
+    ec2:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      instance_ids: item.instance_id
+      region: "{{ aws_region }}"
+      state: running
+      wait: true
+    with_items: "{{ ec2_info.instances}}"
+    tags:
+    - start
+    - never
+    
+  - name: Stopping EC2 instance
+    ec2:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      instance_ids: "{{ item.instance_id}}"
+      region: "{{ aws_region }}"
+      state: stopped
+      wait: true
+    with_items: "{{ ec2_info.instances }}"
+    tags:
+    - stop
+    - never
+ 
+  - name: Terminating EC2 instance
+    ec2:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      instance_ids: "{{ item.instance_id }}"
+      region: "{{ aws_region }}"
+      state: absent
+      wait: true
+    with_items: "{{ ec2_info.instances }}"
+    tags:
+    - terminate
+    - never
+
+   
+  

@@ -1,0 +1,13 @@
+---
+- name: Playbook to copy files to remote servers
+  hosts: all
+  become: true
+
+  tasks:
+  - name: Coping file
+    copy:
+     src: /opt/ansible/index.html
+     dest: /home/ansadmin
+     owner: user1
+     mode: 0600
+

@@ -1,0 +1,44 @@
+---
+# tasks file for wordpress
+- name: Downloading Wordpress
+  get_url:
+#    url: https://wordpress.org/latest.zip
+    url: http://stor/source/wordpress.zip
+    dest: /tmp/wordpress.zip
+    validate_certs: no
+
+- name: Extracting Wordpress
+  unarchive:
+    src: /tmp/wordpress.zip
+    dest: /var/www
+    copy: no
+  become: true
+
+- name: updating apache configuration
+  become: yes
+  lineinfile: 
+    dest: "{{ apache2_conf }}"
+    regexp: "(.)+DocumentRoot /var/www/html"
+    line: "DocumentRoot /var/www/wordpress"
+  notify: 
+  - restart apache
+  
+- name: Copying sample wordpress config file
+  command: mv /var/www/wordpress/wp-config-sample.php /var/www/wordpress/wp-config.php
+  args:
+    creates: /var/www/wordpress/wp-config.php
+  become: true
+
+- name: Updating wordpress config file
+  lineinfile:
+    dest: /var/www/wordpress/wp-config.php
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+  - {'regexp': "define\\( 'DB_NAME', '(.)+' \\);", 'line': "define('DB_NAME', '{{wp_mysql_db}}');"}        
+  - {'regexp': "define\\( 'DB_USER', '(.)+' \\);", 'line': "define('DB_USER', '{{wp_mysql_user}}');"}        
+  - {'regexp': "define\\( 'DB_PASSWORD', '(.)+' \\);", 'line': "define('DB_PASSWORD', '{{wp_mysql_password}}');"} 
+  become: yes
+
+
+

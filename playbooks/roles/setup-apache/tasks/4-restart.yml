@@ -1,0 +1,4 @@
+---
+- name: Restart Apache / HTTPD services
+  command: /bin/true
+  notify: restart {{ my_app }}

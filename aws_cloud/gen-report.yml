@@ -1,0 +1,26 @@
+---
+- name: Generate report about EC2 instances
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    aws_cred.yml
+  vars:
+    aws_region: us-east-1  
+  tasks:
+  - name: Gather information
+    ec2_instance_info:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      region: "{{ aws_region }}"
+      filters:
+        instance-state-name: ['running', 'stopped']
+    register:
+      ec2_info
+
+  - name: Generating csv
+    template:
+      src: mk-csv.j2
+      dest: ec2-report.csv
+
+

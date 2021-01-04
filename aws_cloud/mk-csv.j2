@@ -1,0 +1,7 @@
+{% set row=namespace(num=1) %}
+S.No,Instance_Id,Image_Id,Key_Name
+{% for each in ec2_info.instances %}
+{{row.num}},{{each.instance_id}},{{each.image_id}},{{each.key_name}}
+{% set row.num = row.num + 1 %}
+{% endfor %}
+

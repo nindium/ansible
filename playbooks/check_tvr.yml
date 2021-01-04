@@ -1,0 +1,16 @@
+---
+- name: Check priority beetwen tasks and roles
+  hosts: webservers
+  gather_facts: no
+  become: true
+  
+  tasks:
+  - name: Starting ipset
+    systemd:
+      name: ipset
+      state: started
+  
+  roles:
+  - tasks_vs_roles
+
+

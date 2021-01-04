@@ -1,0 +1,21 @@
+---
+- name: This PB is using to fetch EC2 info
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    aws_cred.yml
+
+  tasks:
+  - name: Getting info about EC2 instance 
+    ec2_instance_info:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      region: us-east-1
+      filters:
+        "tag:Name": Instance-1
+    register: ec2_info
+
+  - name: Printing info
+    debug:
+      msg: "{{ ec2_info }}"

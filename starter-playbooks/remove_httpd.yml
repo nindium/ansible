@@ -1,0 +1,18 @@
+---
+- name: Playbook to remove apache on RHEL family servers
+  hosts: webservers
+  become: true
+
+  tasks:
+
+  - name: Stopping httpd
+    systemd:
+      name: httpd
+      state: stopped
+
+  - name: Removing httpd
+    yum:
+      name: httpd
+      state: absent
+  
+

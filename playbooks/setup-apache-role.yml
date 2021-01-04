@@ -1,0 +1,7 @@
+---
+- name: Setup Apache role
+  hosts: all
+  become: true
+  roles:
+    - setup-apache
+

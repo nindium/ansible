@@ -1,0 +1,23 @@
+---
+- name: This PB is using to fetch EC2 info based on ENVIRONMENT
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars_files:
+    aws_cred.yml
+  
+  tasks:
+  - name: Gathering info
+    ec2_instance_info:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      region: us-east-1
+      filters:
+        "tag:Env": Dev
+    register:
+      ec2_info
+
+  - name:
+    debug:
+      msg: "{{ item.private_dns_name }}"
+    with_items: "{{ ec2_info.instances }}"

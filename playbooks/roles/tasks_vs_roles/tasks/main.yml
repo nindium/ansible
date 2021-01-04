@@ -1,0 +1,20 @@
+---
+# tasks file for tasks_vs_roles
+- name: Installing ipset
+  yum:
+    name: ipset
+    state: latest
+  become: true
+ 
+- name: Copy ipset service file to the systemd directory
+  copy:
+    src: ipset.service
+    dest: /etc/systemd/system/ipset.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: yes
+

@@ -1,0 +1,12 @@
+---
+- name: Creates directory
+  hosts: all
+  become: true
+  gather_facts: true
+  
+  tasks:
+  - name: Creating directory
+    file: 
+      path: /opt/ansadmin/dir
+      state: directory
+

@@ -1,0 +1,17 @@
+---
+- name: The Playbook installs packages at the remote servers
+  hosts: dbservers
+  become: true
+  become_method: sudo
+  become_user: ansadmin
+
+  tasks:
+  - name: "Installing / uninstalling packages"
+    apt:
+      name: 
+      - git
+      - tree
+      state: latest
+
+
+

@@ -1,0 +1,20 @@
+---
+- name: Playbook to create file and directory at the target servers
+  hosts: all
+  become: true
+
+  tasks:
+  - name: Creating file
+    file: 
+      path: /home/ansadmin/test.txt 
+      state: absent
+      mode: '600'
+      owner: root
+      group: root
+
+      
+  - name: Creating directory
+    file:
+      path: /home/ansadmin/mydir
+      state: absent
+

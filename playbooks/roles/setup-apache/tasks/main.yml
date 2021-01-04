@@ -1,0 +1,11 @@
+---
+# tasks file for setup-apache
+- name: Setup Apache / httpd servers
+  block:
+  - include_tasks: 1-redhat.yml
+  - include_tasks: 2-debian.yml
+  - include_tasks: 3-copy-index.yml
+  - include_tasks: 4-restart.yml
+
+
+

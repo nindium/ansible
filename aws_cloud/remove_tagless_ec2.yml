@@ -1,0 +1,28 @@
+---
+- name: Remove tagless ec2 instances
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  vars:
+    aws_region: us-east-1
+  vars_files:
+    aws_cred.yml
+
+  tasks:
+  - name: Get EC2 info
+    ec2_instance_info:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      region: "{{ aws_region }}"
+    register:
+      ec2_info
+
+  - name: Terminating tagless instances
+    ec2:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}" 
+      region: "{{ aws_region }}"
+      instance_ids: "{{ item.instance_id }}"
+      state: absent
+    when: item.tags.keys()|length == 0 
+    with_items: "{{ ec2_info.instances }}"

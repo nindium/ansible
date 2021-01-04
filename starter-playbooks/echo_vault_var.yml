@@ -1,0 +1,11 @@
+---
+- name: Echo var value
+  hosts: all
+  become: true 
+  vars_files:
+  - pass.yml
+
+  tasks:
+  - name: Echo read values
+    debug:
+      msg: Value is {{ password }} 

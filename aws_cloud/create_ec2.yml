@@ -1,0 +1,25 @@
+---
+- name: Spin up AWS ec2 instance
+  gather_facts: no
+  hosts: localhost
+  connection: local
+  vars_files: aws_cred.yml
+
+  tasks:
+  - name: Creating EC2 instance
+    ec2:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      image: ami-00ddb0e5626798373
+      instance_type: t2.micro
+      key_name: ansible
+      region: us-east-1
+      group: Jenkins-SG
+      vpc_subnet_id: subnet-0c07f49a1f8a06b05
+      instance_tags:
+        Name: "{{ instname| default('Ubuntu') }}"
+        Env: Dev
+      count: "{{ number| default(1) }}"
+      wait: yes
+
+      

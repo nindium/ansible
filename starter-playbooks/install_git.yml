@@ -1,0 +1,12 @@
+- name: Intsalll Git on the remote servers
+  hosts:
+  - 10.0.0.3
+  - 10.0.0.5
+  become: true
+  
+  tasks:
+  - name: Installing / removing Git 
+    yum:
+      name: git
+      state: present
+

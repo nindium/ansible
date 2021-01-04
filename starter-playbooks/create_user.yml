@@ -1,0 +1,11 @@
+---
+- name: This playbook creates users at the remote hosts
+  hosts: all
+  become: true
+
+  tasks:
+  - name: Creating user1
+    user:
+      name: user1
+      state: present
+

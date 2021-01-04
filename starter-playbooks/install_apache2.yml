@@ -1,0 +1,19 @@
+---
+- name: Install apache 2 on the Ubuntu server
+  hosts: dbservers
+  become: true
+  gather_facts: true
+  tasks:
+  - name: Installing apache
+    apt:
+      name: apache2
+      state: present
+    notify: Starting apache2
+
+
+  handlers:
+  - name: Starting apache2
+    systemd:
+      name: apache2
+      state: started
+
